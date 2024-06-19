@@ -1,0 +1,24 @@
+{
+	"folders": [
+		{
+			"name": "WQ02",
+			"path": "../WQ02"
+		},
+		{
+			"name": "Tiny GPS Device",
+			"path": "."
+		},
+		{
+			"path": "../WQ03"
+		},
+		{
+			"name": "Tiny_GPS_Device_1",
+			"path": "../../../PlatformIO/Projects/Tiny_GPS_Device_1"
+		},
+		{
+			"name": "RG03",
+			"path": "../../../PlatformIO/Projects/RG03"
+		}
+	],
+	"settings": {}
+}
