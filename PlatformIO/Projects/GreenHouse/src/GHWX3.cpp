@@ -46,6 +46,7 @@
 
 // Include the main header for ModularSensors
 #include <ModularSensors.h>
+
 /** End [includes] */
 
 
@@ -54,7 +55,7 @@
 // ==========================================================================
 /** Start [logging_options] */
 // The name of this program file
-const char* sketchName = "GHWX1.cpp";
+const char* sketchName = "GHWX4.cpp";
 // Logger ID, also becomes the prefix for the name of the data file on SD card
 const char *LoggerID = "GHX1";
 // How frequently (in minutes) to log data
@@ -65,7 +66,7 @@ const int8_t timeZone = -6;  // UTC-6 hours - CST - not sprung forward for dayli
 
 // Set the input and output pins for the logger
 // NOTE:  Use -1 for pins that do not apply
-const int32_t serialBaud = 57600;  // Baud rate for debugging
+const int32_t serialBaud = 115200;  // Baud rate for debugging
 const int8_t  greenLED   = 8;      // Pin for the green LED
 const int8_t  redLED     = 9;      // Pin for the red LED
 const int8_t  buttonPin  = 21;     // Pin for debugging mode (ie, button pin)
@@ -159,26 +160,22 @@ Variable* sht4xTemp =
     new SensirionSHT4x_Temp(&sht4x, "65d7964a-5bfd-4afd-a7d4-f1f677993ff1");
 /** End [sensirion_sht4x] */
 
-
 // ==========================================================================
 //  AOSong AM2315(c) - BJ Digital Humidity and Temperature Sensor
 // ==========================================================================
+
 /** Start [ao_song_am2315] */
-// #include "AM2315c.h" 
-#include "sensors/AOSongAM2315.h"
+#include <sensors/AOSongAM2315.h>  // Ensure the correct path to your AM2315C header
 
-// NOTE: Use -1 for any pins that don't apply or aren't being used.
-const int8_t AM2315Power = sensorPowerPin;  // Power pin
+// Define sensor power pin and use I2C Wire instance
+const int8_t AM2315Power = sensorPowerPin;
 
-// Create an AOSong AM2315 sensor object
-AOSongAM2315 am2315(AM2315Power);
+// Global Variables
+AM2315C_Sensor am2315Sensor(&Wire, sensorPowerPin, 0x38);
 
 // Create humidity and temperature variable pointers for the AM2315
-Variable* am2315Humid =
-    new AOSongAM2315_Humidity(&am2315, "0af7a334-7200-4ade-853d-09c66afb6f58");
-Variable* am2315Temp =
-    new AOSongAM2315_Temp(&am2315, "5c5f2d60-497c-4c34-b6fb-6c074a56b200");
-/** End [ao_song_am2315] */
+Variable* am2315Humid = new AM2315C_Humidity(&am2315Sensor, "0af7a334-7200-4ade-853d-09c66afb6f58");
+Variable* am2315Temp = new AOSongAM2315_Temp(&am2315Sensor, "5c5f2d60-497c-4c34-b6fb-6c074a56b200");
 
 
 // ==========================================================================
@@ -190,8 +187,8 @@ Variable *variableList[] = {
     new SensirionSHT4x_Humidity(&sht4x),         // Relative humidity (Sensirion_SHT40_Humidity)
     new Modem_SignalPercent(&modem),             // Percent full scale (EnviroDIY_LTEB_SignalPercent)
     new SensirionSHT4x_Temp(&sht4x),             // Temperature (Sensirion_SHT40_Temperature)
-    new AOSongAM2315_Temp(&am2315),               // Temperature (AOSong_AM2315_Temp)
-    new AOSongAM2315_Humidity(&am2315)            // Relative humidity (AOSong_AM2315_Humidity)};
+    am2315Temp,                                  // Temperature (AOSong_AM2315_Temp)
+    am2315Humid                                  // Relative humidity (AOSong_AM2315_Humidity)
 };
 
 // All UUID's, device registration, and sampling feature information can be
